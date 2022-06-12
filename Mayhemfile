@@ -1,5 +1,5 @@
 project: code-terror/spdlog
-target: example
+target: simpledom
 
 cmds:
-  - cmd: /spdlog/build/example/example @@
+  - cmd: /rapidjson/build/bin/simpledom @@
