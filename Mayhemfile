@@ -1,0 +1,5 @@
+project: code-terror/spdlog
+target: example
+
+cmds:
+  - cmd: /spdlog/build/example/example @@

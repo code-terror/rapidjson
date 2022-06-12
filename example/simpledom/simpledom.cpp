@@ -5,25 +5,33 @@
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 #include <iostream>
+#include <string.h>
+#include <iostream>
+#include <fstream>
+#include <stdlib.h>
 
 using namespace rapidjson;
 
-int main() {
-    // 1. Parse a JSON string into DOM.
-    const char* json = "{\"project\":\"rapidjson\",\"stars\":10}";
+int main(int argc, char *argv[]) {
+    if(argc != 2){
+    std::cerr << "Must supply a text file\n";
+    return -1;
+  }
+
+  std::ifstream infile;
+  infile.open(argv[1]);
+
+  if (infile.fail()) {
+    std::cerr << "Could not open " << argv[1];
+    return -1;
+  }
+
+  else {
+    char buf[12] = "";
+    infile.read(buf, sizeof(buf));
     Document d;
-    d.Parse(json);
-
-    // 2. Modify it by DOM.
-    Value& s = d["stars"];
-    s.SetInt(s.GetInt() + 1);
-
-    // 3. Stringify the DOM
-    StringBuffer buffer;
-    Writer<StringBuffer> writer(buffer);
-    d.Accept(writer);
-
-    // Output {"project":"rapidjson","stars":11}
-    std::cout << buffer.GetString() << std::endl;
+    d.Parse(buf);
     return 0;
+  }
+    
 }
