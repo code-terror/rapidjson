@@ -1,0 +1,5 @@
+project: code-terror/spdlog
+target: schemavalidator
+
+cmds:
+  - cmd: /rapidjson/build/bin/schemavalidator @@

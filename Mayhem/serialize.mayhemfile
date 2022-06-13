@@ -1,0 +1,5 @@
+project: code-terror/spdlog
+target: serialize
+
+cmds:
+  - cmd: /rapidjson/build/bin/serialize @@

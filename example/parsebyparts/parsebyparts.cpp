@@ -12,6 +12,9 @@
 #include <iostream>
 #include <mutex>
 #include <thread>
+#include <string.h>
+#include <fstream>
+#include <stdlib.h>
 
 using namespace rapidjson;
 
@@ -136,20 +139,30 @@ private:
     bool completed_;
 };
 
-int main() {
+int main(int argc, char *argv[]) {
     Document d;
 
+if(argc != 2){
+    std::cerr << "Must supply a text file\n";
+    return -1;
+  }
+
+  std::ifstream infile;
+  infile.open(argv[1]);
+
+  if (infile.fail()) {
+    std::cerr << "Could not open " << argv[1];
+    return -1;
+  }
+
+  else {
+    char buf[655] = "";
+    infile.read(buf, sizeof(buf));
+    
     {
         AsyncDocumentParser<> parser(d);
 
-        const char json1[] = " { \"hello\" : \"world\", \"t\" : tr";
-        //const char json1[] = " { \"hello\" : \"world\", \"t\" : trX"; // For test parsing error
-        const char json2[] = "ue, \"f\" : false, \"n\": null, \"i\":123, \"pi\": 3.14";
-        const char json3[] = "16, \"a\":[1, 2, 3, 4] } ";
-
-        parser.ParsePart(json1, sizeof(json1) - 1);
-        parser.ParsePart(json2, sizeof(json2) - 1);
-        parser.ParsePart(json3, sizeof(json3) - 1);
+        parser.ParsePart(buf, sizeof(buf) - 1);
     }
 
     if (d.HasParseError()) {
@@ -164,6 +177,9 @@ int main() {
     std::cout << std::endl;
 
     return EXIT_SUCCESS;
+    return 0;
+  }
+    
 }
 
 #else // Not supporting C++11 

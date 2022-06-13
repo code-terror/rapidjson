@@ -1,0 +1,5 @@
+project: code-terror/spdlog
+target: messagereader
+
+cmds:
+  - cmd: /rapidjson/build/bin/messagereader @@

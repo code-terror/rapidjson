@@ -1,0 +1,5 @@
+project: code-terror/spdlog
+target: lookaheadparser
+
+cmds:
+  - cmd: /rapidjson/build/bin/lookaheadparser @@

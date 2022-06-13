@@ -8,6 +8,16 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  look_mayhemfile: Mayhem/lookaheadparser.mayhemfile
+  message_mayhemfile: Mayhem/messagereader.mayhemfile
+  parseby_mayhemfile: Mayhem/parsebyparts.mayhemfile
+  schema_mayhemfile: Mayhem/schemavalidator.mayhemfile
+  serialize_mayhemfile: Mayhem/serialize.mayhemfile
+  simpledom_mayhemfile: Mayhem/simpledom.mayhemfile
+  simplepull_mayhemfile: Mayhem/simplepullreader.mayhemfile
+  simplereader_mayhemfile: Mayhem/simplereader.mayhemfile
+  simplewriter_mayhemfile: Mayhem/simplewriter.mayhemfile
+  
 
 jobs:
   build:
@@ -15,7 +25,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     permissions:
       packages: write
-      contents: write
       security-events: write
     strategy:
       matrix:
@@ -50,12 +59,68 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Start analysis
+      - name: Start analysis for lookaheadparser
         uses: ForAllSecure/mcode-action@v1
         with:
           mayhem-token: ${{ secrets.MAYHEM_TOKEN }}
-          args: --image ${{ steps.meta.outputs.tags }} --duration 300
+          args: --image ${{ steps.meta.outputs.tags }} --file ${{ env.look_mayhemfile}} --duration 300
           sarif-output: sarif
+
+      - name: Start analysis for message
+        uses: ForAllSecure/mcode-action@v1
+        with:
+          mayhem-token: ${{ secrets.MAYHEM_TOKEN }}
+          args: --image ${{ steps.meta.outputs.tags }} --file ${{ env.message_mayhemfile}} --duration 300
+          sarif-output: sarif     
+      
+      - name: Start analysis for parsebyparts
+        uses: ForAllSecure/mcode-action@v1
+        with:
+          mayhem-token: ${{ secrets.MAYHEM_TOKEN }}
+          args: --image ${{ steps.meta.outputs.tags }} --file ${{ env.parseby_mayhemfile}} --duration 300
+          sarif-output: sarif   
+      
+      - name: Start analysis for schemavalidator
+        uses: ForAllSecure/mcode-action@v1
+        with:
+          mayhem-token: ${{ secrets.MAYHEM_TOKEN }}
+          args: --image ${{ steps.meta.outputs.tags }} --file ${{ env.schema_mayhemfile}} --duration 300
+          sarif-output: sarif
+
+      - name: Start analysis for serialize
+        uses: ForAllSecure/mcode-action@v1
+        with:
+          mayhem-token: ${{ secrets.MAYHEM_TOKEN }}
+          args: --image ${{ steps.meta.outputs.tags }} --file ${{ env.serialize_mayhemfile}} --duration 300
+          sarif-output: sarif     
+      
+      - name: Start analysis for simpledom
+        uses: ForAllSecure/mcode-action@v1
+        with:
+          mayhem-token: ${{ secrets.MAYHEM_TOKEN }}
+          args: --image ${{ steps.meta.outputs.tags }} --file ${{ env.simpledom_mayhemfile}} --duration 300
+          sarif-output: sarif   
+      
+      - name: Start analysis for simplepullreader
+        uses: ForAllSecure/mcode-action@v1
+        with:
+          mayhem-token: ${{ secrets.MAYHEM_TOKEN }}
+          args: --image ${{ steps.meta.outputs.tags }} --file ${{ env.simplepull_mayhemfile}} --duration 300
+          sarif-output: sarif     
+      
+      - name: Start analysis for simplereader
+        uses: ForAllSecure/mcode-action@v1
+        with:
+          mayhem-token: ${{ secrets.MAYHEM_TOKEN }}
+          args: --image ${{ steps.meta.outputs.tags }} --file ${{ env.simplereader_mayhemfile}} --duration 300
+          sarif-output: sarif  
+      
+      - name: Start analysis for simplwriter
+        uses: ForAllSecure/mcode-action@v1
+        with:
+          mayhem-token: ${{ secrets.MAYHEM_TOKEN }}
+          args: --image ${{ steps.meta.outputs.tags }} --file ${{ env.simplewriter_mayhemfile}} --duration 300
+          sarif-output: sarif  
 
       - name: Upload SARIF file(s)
         uses: github/codeql-action/upload-sarif@v1

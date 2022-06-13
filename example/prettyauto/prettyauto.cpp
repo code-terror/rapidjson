@@ -12,26 +12,40 @@
 #include <fcntl.h>
 #include <io.h>
 #endif
+#include <string.h>
+#include <iostream>
+#include <fstream>
+#include <stdlib.h>
 
 using namespace rapidjson;
 
-int main(int, char*[]) {
-#ifdef _WIN32
-    // Prevent Windows converting between CR+LF and LF
-    _setmode(_fileno(stdin), _O_BINARY);    // NEW
-    _setmode(_fileno(stdout), _O_BINARY);   // NEW
-#endif
+int main(int argc, char *argv[]) {
+    if(argc != 2){
+    std::cerr << "Must supply a text file\n";
+    return -1;
+  }
 
-    // Prepare reader and input stream.
+  std::ifstream infile;
+  infile.open(argv[1]);
+
+  if (infile.fail()) {
+    std::cerr << "Could not open " << argv[1];
+    return -1;
+  }
+
+  else {
+    char buf[65536] = "";
+    infile.read(buf, sizeof(buf));
+        // Prepare reader and input stream.
     //Reader reader;
     GenericReader<AutoUTF<unsigned>, UTF8<> > reader;       // CHANGED
     char readBuffer[65536];
-    FileReadStream is(stdin, readBuffer, sizeof(readBuffer));
+    FileReadStream is(stdin, buf, sizeof(readBuffer));
     AutoUTFInputStream<unsigned, FileReadStream> eis(is);   // NEW
 
     // Prepare writer and output stream.
     char writeBuffer[65536];
-    FileWriteStream os(stdout, writeBuffer, sizeof(writeBuffer));
+    FileWriteStream os(stdout, buf, sizeof(writeBuffer));
 
 #if 1
     // Use the same Encoding of the input. Also use BOM according to input.
@@ -53,4 +67,7 @@ int main(int, char*[]) {
     }
 
     return 0;
+  }
+
+
 }

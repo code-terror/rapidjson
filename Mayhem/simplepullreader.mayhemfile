@@ -1,0 +1,5 @@
+project: code-terror/spdlog
+target: simplepullreader
+
+cmds:
+  - cmd: /rapidjson/build/bin/simplepullreader @@

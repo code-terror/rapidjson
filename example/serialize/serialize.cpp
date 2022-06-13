@@ -5,6 +5,10 @@
 #include <cstdio>
 #include <string>
 #include <vector>
+#include <string.h>
+#include <iostream>
+#include <fstream>
+#include <stdlib.h>
 
 using namespace rapidjson;
 
@@ -150,12 +154,27 @@ private:
 Employee::~Employee() {
 }
 
-int main(int, char*[]) {
+int main(int argc, char *argv[]) {
     std::vector<Employee> employees;
+      if(argc != 2){
+    std::cerr << "Must supply a text file\n";
+    return -1;
+  }
 
-    employees.push_back(Employee("Milo YIP", 34, true));
+  std::ifstream infile;
+  infile.open(argv[1]);
+
+  if (infile.fail()) {
+    std::cerr << "Could not open " << argv[1];
+    return -1;
+  }
+
+  else {
+    char buf[12] = "";
+    infile.read(buf, sizeof(buf));
+    employees.push_back(Employee(buf, 34, true));
     employees.back().AddDependent(Dependent("Lua YIP", 3, new Education("Happy Kindergarten", 3.5)));
-    employees.back().AddDependent(Dependent("Mio YIP", 1));
+    employees.back().AddDependent(Dependent(buf, 1));
 
     employees.push_back(Employee("Percy TSE", 30, false));
 
@@ -168,6 +187,9 @@ int main(int, char*[]) {
     writer.EndArray();
 
     puts(sb.GetString());
-
     return 0;
+  }
+
+
+
 }

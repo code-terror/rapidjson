@@ -1,6 +1,9 @@
 #include "rapidjson/reader.h"
 #include "rapidjson/document.h"
+#include <string.h>
 #include <iostream>
+#include <fstream>
+#include <stdlib.h>
 
 RAPIDJSON_DIAG_PUSH
 #ifdef __GNUC__
@@ -282,69 +285,32 @@ int LookaheadParser::PeekType() {
 
 //-------------------------------------------------------------------------
 
-int main() {
+int main(int argc, char *argv[]) {
     using namespace std;
+      if(argc != 2){
+    std::cerr << "Must supply a text file\n";
+    return -1;
+  }
 
-    char json[] = " { \"hello\" : \"world\", \"t\" : true , \"f\" : false, \"n\": null,"
-        "\"i\":123, \"pi\": 3.1416, \"a\":[-1, 2, 3, 4, \"array\", []], \"skipArrays\":[1, 2, [[[3]]]], "
-        "\"skipObject\":{ \"i\":0, \"t\":true, \"n\":null, \"d\":123.45 }, "
-        "\"skipNested\":[[[[{\"\":0}, {\"\":[-9.87]}]]], [], []], "
-        "\"skipString\":\"zzz\", \"reachedEnd\":null, \"t\":true }";
+  std::ifstream infile;
+  infile.open(argv[1]);
 
-    LookaheadParser r(json);
-    
-    RAPIDJSON_ASSERT(r.PeekType() == kObjectType);
+  if (infile.fail()) {
+    std::cerr << "Could not open " << argv[1];
+    return -1;
+  }
 
+  else {
+    char buf[12] = "";
+    infile.read(buf, sizeof(buf));
+  LookaheadParser r(buf);
     r.EnterObject();
-    while (const char* key = r.NextObjectKey()) {
-        if (0 == strcmp(key, "hello")) {
-            RAPIDJSON_ASSERT(r.PeekType() == kStringType);
-            cout << key << ":" << r.GetString() << endl;
-        }
-        else if (0 == strcmp(key, "t") || 0 == strcmp(key, "f")) {
-            RAPIDJSON_ASSERT(r.PeekType() == kTrueType || r.PeekType() == kFalseType);
-            cout << key << ":" << r.GetBool() << endl;
-            continue;
-        }
-        else if (0 == strcmp(key, "n")) {
-            RAPIDJSON_ASSERT(r.PeekType() == kNullType);
-            r.GetNull();
-            cout << key << endl;
-            continue;
-        }
-        else if (0 == strcmp(key, "pi")) {
-            RAPIDJSON_ASSERT(r.PeekType() == kNumberType);
-            cout << key << ":" << r.GetDouble() << endl;
-            continue;
-        }
-        else if (0 == strcmp(key, "a")) {
-            RAPIDJSON_ASSERT(r.PeekType() == kArrayType);
-            
-            r.EnterArray();
-            
-            cout << key << ":[ ";
-            while (r.NextArrayValue()) {
-                if (r.PeekType() == kNumberType) {
-                    cout << r.GetDouble() << " ";
-                }
-                else if (r.PeekType() == kStringType) {
-                    cout << r.GetString() << " ";
-                }
-                else {
-                    r.SkipArray();
-                    break;
-                }
-            }
-            
-            cout << "]" << endl;
-        }
-        else {
-            cout << key << ":skipped" << endl;
-            r.SkipValue();
-        }
-    }
-    
+    r.NextObjectKey();
     return 0;
+  }
+
+    
+
 }
 
 RAPIDJSON_DIAG_POP

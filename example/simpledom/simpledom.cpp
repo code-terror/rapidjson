@@ -4,7 +4,6 @@
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
-#include <iostream>
 #include <string.h>
 #include <iostream>
 #include <fstream>

@@ -1,5 +1,8 @@
 #include "rapidjson/reader.h"
 #include <iostream>
+#include <string.h>
+#include <fstream>
+#include <stdlib.h>
 
 using namespace rapidjson;
 using namespace std;
@@ -30,13 +33,29 @@ struct MyHandler {
     bool EndArray(SizeType elementCount) { cout << "EndArray(" << elementCount << ")" << endl; return true; }
 };
 
-int main() {
-    const char json[] = " { \"hello\" : \"world\", \"t\" : true , \"f\" : false, \"n\": null, \"i\":123, \"pi\": 3.1416, \"a\":[1, 2, 3, 4] } ";
+int main(int argc, char *argv[]) {
+     if(argc != 2){
+    std::cerr << "Must supply a text file\n";
+    return -1;
+  }
 
+  std::ifstream infile;
+  infile.open(argv[1]);
+
+  if (infile.fail()) {
+    std::cerr << "Could not open " << argv[1];
+    return -1;
+  }
+
+  else {
+    char buf[12] = "";
+    infile.read(buf, sizeof(buf));
     MyHandler handler;
     Reader reader;
-    StringStream ss(json);
+    StringStream ss(buf);
     reader.Parse(ss, handler);
-
     return 0;
+  }
+    
+
 }

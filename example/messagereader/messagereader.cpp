@@ -6,6 +6,9 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <string.h>
+#include <fstream>
+#include <stdlib.h>
 
 using namespace std;
 using namespace rapidjson;
@@ -86,20 +89,28 @@ static void ParseMessages(const char* json, MessageMap& messages) {
     }
 }
 
-int main() {
+int main(int argc, char *argv[]) {
     MessageMap messages;
+       if(argc != 2){
+    std::cerr << "Must supply a text file\n";
+    return -1;
+  }
 
-    const char* json1 = "{ \"greeting\" : \"Hello!\", \"farewell\" : \"bye-bye!\" }";
-    cout << json1 << endl;
-    ParseMessages(json1, messages);
+  std::ifstream infile;
+  infile.open(argv[1]);
 
-    for (MessageMap::const_iterator itr = messages.begin(); itr != messages.end(); ++itr)
-        cout << itr->first << ": " << itr->second << endl;
+  if (infile.fail()) {
+    std::cerr << "Could not open " << argv[1];
+    return -1;
+  }
 
-    cout << endl << "Parse a JSON with invalid schema." << endl;
-    const char* json2 = "{ \"greeting\" : \"Hello!\", \"farewell\" : \"bye-bye!\", \"foo\" : {} }";
-    cout << json2 << endl;
-    ParseMessages(json2, messages);
-
+  else {
+    char buf[655] = "";
+    infile.read(buf, sizeof(buf));
+    ParseMessages(buf, messages);
     return 0;
+  }
+    
+    
+    
 }

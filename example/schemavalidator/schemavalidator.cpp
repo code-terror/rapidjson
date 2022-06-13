@@ -173,11 +173,9 @@ int main(int argc, char *argv[]) {
 
     // Check the validation result
     if (validator.IsValid()) {
-        printf("Input JSON is valid.\n");
         return EXIT_SUCCESS;
     }
     else {
-        printf("Input JSON is invalid.\n");
         StringBuffer sb;
         validator.GetInvalidSchemaPointer().StringifyUriFragment(sb);
         fprintf(stderr, "Invalid schema: %s\n", sb.GetString());
