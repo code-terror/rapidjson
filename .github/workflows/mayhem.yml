@@ -58,6 +58,13 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+      
+      - name: Start analysis for serialize
+        uses: ForAllSecure/mcode-action@v1
+        with:
+          mayhem-token: ${{ secrets.MAYHEM_TOKEN }}
+          args: --image ${{ steps.meta.outputs.tags }} --file ${{ env.serialize_mayhemfile}} --duration 300
+          sarif-output: sarif  
 
       - name: Start analysis for lookaheadparser
         uses: ForAllSecure/mcode-action@v1
@@ -85,14 +92,7 @@ jobs:
         with:
           mayhem-token: ${{ secrets.MAYHEM_TOKEN }}
           args: --image ${{ steps.meta.outputs.tags }} --file ${{ env.schema_mayhemfile}} --duration 300
-          sarif-output: sarif
-
-      - name: Start analysis for serialize
-        uses: ForAllSecure/mcode-action@v1
-        with:
-          mayhem-token: ${{ secrets.MAYHEM_TOKEN }}
-          args: --image ${{ steps.meta.outputs.tags }} --file ${{ env.serialize_mayhemfile}} --duration 300
-          sarif-output: sarif     
+          sarif-output: sarif   
       
       - name: Start analysis for simpledom
         uses: ForAllSecure/mcode-action@v1
